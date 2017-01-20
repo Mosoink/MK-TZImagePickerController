@@ -11,4 +11,9 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.resources    = "TZImagePickerController/**/*.{png,xib,nib,bundle}"
   s.source_files = "TZImagePickerController/*.{h,m}"
+
+  s.frameworks = [
+      'AssetsLibrary',
+      'MediaPlayer'
+  ]
 end
