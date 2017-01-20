@@ -26,14 +26,17 @@
 
 - (void)layoutSubviews{
     [super layoutSubviews];
-    _loadingView.frame  = CGRectMake(0, 0, self.height, self.height);
+    
+    CGFloat centerX;
+    _loadingView.frame  = CGRectMake(0, 0, self.frame.size.height, self.frame.size.height);
     if (self.textAlignment == NSTextAlignmentLeft) {
-        _loadingView.centerX = self.height/2.;
+        centerX = self.frame.size.height/2.;
     }else if (self.textAlignment == NSTextAlignmentCenter) {
-        _loadingView.centerX = self.width/2.;
+        centerX = self.frame.size.width/2.;
     }else if (self.textAlignment == NSTextAlignmentRight) {
-        _loadingView.centerX = self.width-self.height/2.;
+        centerX = self.frame.size.width-self.frame.size.height/2.;
     }
+    _loadingView.center = CGPointMake(centerX, _loadingView.center.y);
 }
 
 - (void)setLoading:(BOOL)loading{

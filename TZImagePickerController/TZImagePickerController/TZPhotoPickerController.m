@@ -16,6 +16,7 @@
 #import "TZImageManager.h"
 #import "TZVideoPlayerController.h"
 #import "TZLoadingLabel.h"
+#import "TZMacro.h"
 
 static CGFloat margin = 4;
 @interface TZPhotoPickerController ()<UICollectionViewDataSource,UICollectionViewDelegate, UICollectionViewDelegateFlowLayout> {
@@ -63,10 +64,17 @@ static CGSize AssetGridThumbnailSize;
     }];
     [self resetCachedAssets];
 }
-
+- (CGRect)boundsForPortrait{
+    CGRect bounds = [UIScreen mainScreen].bounds;
+    UIInterfaceOrientation interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
+    if(UIInterfaceOrientationIsLandscape(interfaceOrientation)){
+        bounds.size = CGSizeMake(bounds.size.height, bounds.size.width);
+    }
+    return bounds;
+}
 - (void)configCollectionView {
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    CGFloat itemWH = (SCREEN_PW - 2 * margin - 4) / 4 - margin;
+    CGFloat itemWH = ([self boundsForPortrait].size.width - 2 * margin - 4) / 4 - margin;
     layout.itemSize = CGSizeMake(itemWH, itemWH);
     layout.minimumInteritemSpacing = margin;
     layout.minimumLineSpacing = margin;

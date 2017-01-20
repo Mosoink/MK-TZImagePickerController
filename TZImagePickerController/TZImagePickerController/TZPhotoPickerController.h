@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MIRootViewController.h"
+#import "TZMacro.h"
+
 @class TZAlbumModel;
-@interface TZPhotoPickerController : MIRootViewController
+@interface TZPhotoPickerController : TZ_ROOT_VIEWCONTROLLER
 
 @property (nonatomic, strong) TZAlbumModel *model;
 

@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MIRootViewController.h"
+#import "TZMacro.h"
 
 @class TZAssetModel;
-@interface TZVideoPlayerController : MIRootViewController
+@interface TZVideoPlayerController : TZ_ROOT_VIEWCONTROLLER
 
 @property (nonatomic, strong) TZAssetModel *model;
 

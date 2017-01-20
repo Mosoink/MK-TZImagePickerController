@@ -7,8 +7,96 @@
 //
 
 #import "TZAssetModel.h"
-#import "MIUtils.h"
 
+@interface UIImage (_TZ)
+
+@end
+
+@implementation UIImage (_TZ)
+
+- (instancetype)_tz_imageFixOrientation{
+    UIImage *aImage = self;
+    // No-op if the orientation is already correct
+    if (aImage.imageOrientation == UIImageOrientationUp)
+        return aImage;
+    
+    // We need to calculate the proper transformation to make the image upright.
+    // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationDown:
+        case UIImageOrientationDownMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.width, aImage.size.height);
+            transform = CGAffineTransformRotate(transform, M_PI);
+            break;
+            
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);
+            transform = CGAffineTransformRotate(transform, M_PI_2);
+            break;
+            
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+            transform = CGAffineTransformTranslate(transform, 0, aImage.size.height);
+            transform = CGAffineTransformRotate(transform, -M_PI_2);
+            break;
+        default:
+            break;
+    }
+    
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationUpMirrored:
+        case UIImageOrientationDownMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);
+            transform = CGAffineTransformScale(transform, -1, 1);
+            break;
+            
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRightMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.height, 0);
+            transform = CGAffineTransformScale(transform, -1, 1);
+            break;
+        default:
+            break;
+    }
+    
+    // Now we draw the underlying CGImage into a new context, applying the transform
+    // calculated above.
+    CGContextRef ctx = CGBitmapContextCreate(NULL, aImage.size.width, aImage.size.height,
+                                             CGImageGetBitsPerComponent(aImage.CGImage), 0,
+                                             CGImageGetColorSpace(aImage.CGImage),
+                                             CGImageGetBitmapInfo(aImage.CGImage));
+    CGContextConcatCTM(ctx, transform);
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+            // Grr...
+            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.height,aImage.size.width), aImage.CGImage);
+            break;
+            
+        default:
+            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.width,aImage.size.height), aImage.CGImage);
+            break;
+    }
+    
+    // And now we just create a new UIImage from the drawing context
+    CGImageRef cgimg = CGBitmapContextCreateImage(ctx);
+    UIImage *img = [UIImage imageWithCGImage:cgimg];
+    CGContextRelease(ctx);
+    CGImageRelease(cgimg);
+    return img;
+}
+
+@end
+
+
+
+
+#pragma mark -
 @interface TZAssetModel ()
 
 @end
@@ -30,21 +118,16 @@
 }
 
 - (UIImage *)thumbImage{
-    MLog(@"1");
     __block UIImage *thumbImage;
     dispatch_semaphore_t sema_done = dispatch_semaphore_create(0);
     [self imageWithType:TZPhotoTypeThumb completion:^(UIImage *image, NSDictionary *info) {
         thumbImage = image;
-        MLog(@"2");
         dispatch_semaphore_signal(sema_done);
-        MLog(@"3");
     }];
-    MLog(@"4");
     // We can't return until the async block has returned.
     // So we wait until it's done. If we wait on the main queue
     // then our UI will be "frozen".
     dispatch_semaphore_wait(sema_done, DISPATCH_TIME_FOREVER);
-    MLog(@"5");
     return thumbImage;
 }
 
@@ -54,7 +137,7 @@
     if (_isOriginal) {
         CGImageRef imageRef = [asset.defaultRepresentation fullResolutionImage];
         image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:(UIImageOrientation)asset.defaultRepresentation.orientation];
-        image = [image imageFixOrientation];
+        image = [image _tz_imageFixOrientation];
     }else{
         NSInteger max = 1024;
         CGImageRef imageRef = [asset.defaultRepresentation fullScreenImage];

@@ -10,7 +10,6 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "TZAssetModel.h"
 #import "TZImagePickerController.h"
-#import "MIUtils.h"
 
 @interface TZImageManager ()
 @property (nonatomic, strong) ALAssetsLibrary *assetLibrary;
@@ -323,7 +322,6 @@ static CGFloat TZScreenScale;
         if (photoWidth <= 200) {
             CGImageRef thumbnailImageRef = alAsset.aspectRatioThumbnail;
             UIImage *thumbnailImage = [UIImage imageWithCGImage:thumbnailImageRef scale:1.0 orientation:UIImageOrientationUp];
-            MLog(@"image size: %f | %f", thumbnailImage.size.width, thumbnailImage.size.height);
             if (completion) completion(thumbnailImage,nil, NO);
         }else{
             ALAssetRepresentation *assetRep = [alAsset defaultRepresentation];

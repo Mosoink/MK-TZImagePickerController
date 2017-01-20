@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MIRootViewController.h"
+#import "TZMacro.h"
 
-@interface TZPhotoPreviewController : MIRootViewController
+@interface TZPhotoPreviewController : TZ_ROOT_VIEWCONTROLLER
 
 @property (nonatomic, strong) NSArray *photoArr;                ///< All photos / 所有图片的数组
 @property (nonatomic, strong) NSMutableArray *selectedPhotoArr; ///< Current selected photos / 当前选中的图片数组

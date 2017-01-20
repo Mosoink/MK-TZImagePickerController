@@ -39,11 +39,11 @@
 
     // Default appearance, you can reset these after this method
     // 默认的外观，你可以在这个方法后重置
-    self.oKButtonTitleColorNormal   = kCOLOR_THEME;
-    self.oKButtonTitleColorDisabled = [kCOLOR_THEME colorWithAlphaComponent:0.4];
+//    self.oKButtonTitleColorNormal   = kCOLOR_THEME;
+//    self.oKButtonTitleColorDisabled = [kCOLOR_THEME colorWithAlphaComponent:0.4];
     
     if (iOS7Later) {
-        self.navigationBar.barTintColor = kCOLOR_THEME;
+        self.navigationBar.barTintColor = _oKButtonTitleColorNormal;
         self.navigationBar.tintColor = [UIColor whiteColor];
         self.automaticallyAdjustsScrollViewInsets = NO;
     }
