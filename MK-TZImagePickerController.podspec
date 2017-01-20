@@ -12,6 +12,7 @@ Pod::Spec.new do |s|
   s.resources    = "TZImagePickerController/**/*.{png,xib,nib,bundle}"
   s.source_files = "TZImagePickerController/*.{h,m}"
 
+  s.pod_target_xcconfig = { 'OTHER_LDFLAGS' => '-lObjC' }
   s.frameworks = [
       'AssetsLibrary',
       'MediaPlayer'
