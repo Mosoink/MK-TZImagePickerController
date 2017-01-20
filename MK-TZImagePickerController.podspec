@@ -9,8 +9,8 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = "6.0"
   s.source       = { :git => "https://github.com/Mosoink/MK-TZImagePickerController.git"}
   s.requires_arc = true
-  s.resources    = "TZImagePickerController/**/*.{png,xib,nib,bundle}"
-  s.source_files = "TZImagePickerController/*.{h,m}"
+  s.resources    = "TZImagePickerController/TZImagePickerController/**/*.{png,xib,nib,bundle}"
+  s.source_files = "TZImagePickerController/TZImagePickerController/*.{h,m}"
 
   s.pod_target_xcconfig = { 'OTHER_LDFLAGS' => '-lObjC' }
   s.frameworks = [
